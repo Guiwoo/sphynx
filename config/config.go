@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"maps"
 	"reflect"
 )
 
@@ -18,22 +19,25 @@ func NewConfigValue[T comparable](value, defaultValue T) (ConfigValue[T], error)
 	return ConfigValue[T]{Value: value, Default: defaultValue}, nil
 }
 
-type Config struct {
+var singletonCfg *GConfig
+
+type GConfig struct {
 	values map[string]ConfigValue[any]
 }
 
-func NewConfig(inputValue map[string]ConfigValue[any]) *Config {
-	cfg := &Config{
+func NewConfig(inputValue map[string]ConfigValue[any]) *GConfig {
+	cfg := &GConfig{
 		values: make(map[string]ConfigValue[any]),
 	}
 	cfg.SetDefault()
-
 	cfg.Copy(inputValue)
 
-	return cfg
+	singletonCfg = cfg
+
+	return singletonCfg
 }
 
-func (cfg *Config) SetDefault() {
+func (cfg *GConfig) SetDefault() {
 	cfg.values["log_level"] = ConfigValue[any]{"", "debug"}
 	cfg.values["log_folder"] = ConfigValue[any]{"", "log"}
 	cfg.values["log_max_size"] = ConfigValue[any]{0, 1024}
@@ -42,19 +46,21 @@ func (cfg *Config) SetDefault() {
 	cfg.values["log_compress"] = ConfigValue[any]{false, true}
 }
 
-func (cfg *Config) Copy(inputValue map[string]ConfigValue[any]) {
+func (cfg *GConfig) Copy(inputValue map[string]ConfigValue[any]) {
 	if inputValue == nil {
 		return
 	}
-	for key, value := range inputValue {
-		cfg.values[key] = value
-	}
+	maps.Copy(cfg.values, inputValue)
 }
 
-func GetConfig[T comparable](cfg *Config, key string) T {
+func Get[T any](key string) T {
+	if singletonCfg == nil {
+		NewConfig(nil)
+	}
+
 	var returnValue T
 
-	anyValue, ok := cfg.values[key]
+	anyValue, ok := singletonCfg.values[key]
 	if !ok {
 		return returnValue
 	}
