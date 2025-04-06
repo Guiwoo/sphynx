@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sphinx/config"
 	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
+	"github.com/sphynx/config"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
