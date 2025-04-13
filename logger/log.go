@@ -17,9 +17,7 @@ type ContextHook struct{}
 func (c *ContextHook) Run(e *zerolog.Event, lv zerolog.Level, msg string) {
 	ctx := e.GetCtx()
 	value, _ := ctx.Value("trid").(string)
-	if value != "" {
-		e.Str("trid", value)
-	}
+	e.Str("trid", value)
 }
 
 func New() *zerolog.Logger {
@@ -57,7 +55,7 @@ func consloeWriter() zerolog.ConsoleWriter {
 		return fmt.Sprintf("[ %s ]", i)
 	}
 	output.FormatLevel = func(i interface{}) string {
-		return strings.ToUpper(fmt.Sprintf("[ %-6s]", i))
+		return strings.ToUpper(fmt.Sprintf("[%-6s]", i))
 	}
 	output.FormatMessage = func(i interface{}) string {
 		return fmt.Sprintf("[ msg : %-6s ]", i)

@@ -1,5 +1,6 @@
 /.idea
 /.vscode
+/compose/db
 
 go.mod
 go.sum
