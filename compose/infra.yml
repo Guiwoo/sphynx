@@ -11,6 +11,8 @@ services:
       - ${PWD}/db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: 1q2w3e4r
+    networks:
+      - guinet
 
   infra_admin:
     image: adminer
@@ -18,4 +20,9 @@ services:
     restart: always
     ports:
       - 28080:8080
+    networks:
+      - guinet
 
+networks:
+  guinet:
+    driver: bridge
