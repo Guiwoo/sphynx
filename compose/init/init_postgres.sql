@@ -1,0 +1,2 @@
+CREATE USER guiio WITH PASSWORD 'guiio';
+CREATE DATABASE guiio OWNER guiio;
